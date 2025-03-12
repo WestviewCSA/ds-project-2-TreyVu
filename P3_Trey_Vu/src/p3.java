@@ -14,20 +14,34 @@ public class p3 {
 			File file  = new File(filename);
 			Scanner scanner = new Scanner(file);
 			
+			
 			int numRows 	= scanner.nextInt();
 			int numCols 	= scanner.nextInt();
-			int numMazes 	= scanner.nextInt();
+			int numRooms 	= scanner.nextInt();
+			Tile[][][] board = new Tile[numRows][numCols][numRooms];
 			
-			// process the map!
 			int rowIndex = 0;
+			int roomIndex = 1;
+			
+			// scan each row
 			while (scanner.hasNextLine()) {
-				// grab a line (one row of the map)
 				String row = scanner.nextLine();
+				
 				if (row.length() > 0) {
+					// scan each column
 					for (int i = 0; i < numCols && i < row.length(); i++) {
 						char element = row.charAt(i);
-						Tile obj = new Tile(rowIndex, i, element);
+						if (findChar(element)) {
+							Tile obj = new Tile(rowIndex, i, roomIndex, element);
+						}						
 					}
+					rowIndex++;
+				}
+				
+				// update rooms and rows
+				if (rowIndex > numRows) {
+					rowIndex = 0;
+					roomIndex++;
 				}
 			}
 			
@@ -36,5 +50,20 @@ public class p3 {
 			System.out.println(e);
 			System.out.println("gg");
 		}
+	}
+	
+	public static boolean findChar(char character) {
+		if (character == '@') {
+			return true;
+		} else if (character == '.') {
+			return true;
+		} else if (character == '|') {
+			return true;
+		} else if (character == 'W') {
+			return true;
+		} else if (character == '$') {
+			return true;
+		}
+		return false;
 	}
 }
