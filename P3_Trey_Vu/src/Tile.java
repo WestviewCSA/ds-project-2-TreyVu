@@ -1,14 +1,14 @@
 
 public class Tile {
 	private int row, col, room;
-	private char type;
+	private char character;
 	
-	public Tile(int row, int col, int room, char type) {
+	public Tile(int row, int col, int room, char character) {
 		super();
 		this.row = row;
 		this.col = col;
 		this.room = room;
-		this.type = type;
+		this.character = character;
 	}
 	
 	public int getRow() {
@@ -29,11 +29,11 @@ public class Tile {
 	public void setRoom(int room) {
 		this.room = room;
 	}
-	public char getType() {
-		return type;
+	public char getChar() {
+		return character;
 	}
-	public void setType(char type) {
-		this.type = type;
+	public void setChar(char type) {
+		this.character = type;
 	}
 	
 	
