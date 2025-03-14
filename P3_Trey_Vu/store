@@ -11,25 +11,24 @@ open walkway                                                  ‘|’
 
 Wolverine can only move North, South, East, or West. That is, he may not travel along the diagonals of the maze. Your job is to find a route from Wolverine to the Diamond Wolverine Buck and mark this route with the ‘+’ symbol. For instance, a simple maze might look like this:
 
-@@@@@@@
-@@W...@
-@...@@@
-@.....@
-@@@@@.@
-@.....@
-@@@@$@@
-
+	@@@@@@@
+	@@W...@
+	@...@@@
+	@.....@
+	@@@@@.@
+	@.....@
+	@@@@$@@
 
 The solution might look like this:
 
-
-@@@@@@@
-@@W...@
-@.+.@@@
-@.++++@
-@@@@@+@
-@...++@
-@@@@$@@
+	@@@@@@@
+	@@W...@
+	@.+.@@@
+	@.++++@
+	@@@@@+@
+	@...++@
+	@@@@$@@
+	
 Specifications
 Wolverine will be confined to a rectangular maze that is M-rows by N-columns, i.e., He knows the Diamond Wolverine Buck is somewhere within the maze and will not leave the premises. Wolverine will move to different connected mazes until he finds it. If no wolverine buck is found in a maze, Wolverine will move to the open walkway, which will take him to the next maze. Each Maze has exactly one open walkway leading to another Maze. In other words, in a . Wolverine will be guided to the open walkway (leading to the next maze) or to the Diamond Wolverine Buck.
 Routing Approaches
@@ -54,95 +53,93 @@ You are free to use any routing approach you wish, provided that it is faster th
 Input and Output Formats
 There are two input formats. The first is the text-based map (shown in the example above). The second is a coordinate-based system where Wolverine (W), the Diamond Wolverine Buck ($), open walkway (|), and the wall (@) locations are listed by their row and column position (in that order). Every other location (unspecified) is assumed to be empty (.). In both cases, the size of the maze (M rows by N columns) is specified as a pair of integers, separated by a single space, as the first line of the input file. The third number is the number of mazes. When there are multiple mazes, the mazes are tiled top-to-bottom. That is, the first line of the file will be: M N R. For example, the following is a legal input file using the text-map format:
 
-
-5 4 1
-@@@@
-W.@$
-@...
-...@
-@..@
-
+	5 4 1
+	@@@@
+	W.@$
+	@...
+	...@
+	@..@
 
 and the coordinate-based format:
 The first character is the map element, the 2nd is the row location, the 3rd is the column location and the last character is the maze “level”. In the example below, it is 0 since there is a total of one maze so the map information is all for maze 0.
 
-5 4 1
-@ 0 0 0
-@ 0 1 0
-@ 0 2 0
-@ 0 3 0
-@ 3 3 0
-W 1 0 0
-@ 2 0 0
-@ 1 2 0
-$ 1 3 0
-@ 4 0 0 
-@ 4 3 0
+	5 4 1
+	@ 0 0 0
+	@ 0 1 0
+	@ 0 2 0
+	@ 0 3 0
+	@ 3 3 0
+	W 1 0 0
+	@ 2 0 0
+	@ 1 2 0
+	$ 1 3 0
+	@ 4 0 0 
+	@ 4 3 0
 
 Example 2:
-4 4 2
-@@@@
-W.@@
-@..|
-...@
-@@@@
-@..@
-W..@
-@..$
+	4 4 2
+	@@@@
+	W.@@
+	@..|
+	...@
+	@@@@
+	@..@
+	W..@
+	@..$
 
 and the coordinate-based format:
 
 The last character denotes the maze level. 
-4 4 2
-@ 0 0 0
-@ 0 1 0
-@ 0 2 0
-@ 0 3 0
-W 1 0 0
-. 1 1 0
-@ 1 2 0
-@ 1 3 0
-@ 2 0 0
-. 2 1 0
-. 2 2 0
-| 2 3 0
-. 3 0 0
-. 3 1 0
-. 3 2 0
-@ 3 3 0
-@ 0 0 1
-@ 0 1 1
-@ 0 2 1
-@ 0 3 1
-@ 1 0 1
-. 1 1 1
-. 1 2 1
-@ 2 3 1
-W 2 0 1
-. 2 1 1
-. 2 2 1
-@ 2 3 1
-@ 3 0 1
-. 3 1 1
-. 3 2 1
-$ 3 3 1
+	4 4 2
+	@ 0 0 0
+	@ 0 1 0
+	@ 0 2 0
+	@ 0 3 0
+	W 1 0 0
+	. 1 1 0
+	@ 1 2 0
+	@ 1 3 0
+	@ 2 0 0
+	. 2 1 0
+	. 2 2 0
+	| 2 3 0
+	. 3 0 0
+	. 3 1 0
+	. 3 2 0
+	@ 3 3 0
+	@ 0 0 1
+	@ 0 1 1
+	@ 0 2 1
+	@ 0 3 1
+	@ 1 0 1
+	. 1 1 1
+	. 1 2 1
+	@ 2 3 1
+	W 2 0 1
+	. 2 1 1
+	. 2 2 1
+	@ 2 3 1
+	@ 3 0 1
+	. 3 1 1
+	. 3 2 1
+	$ 3 3 1
 
 Similarly, there are also two output formats. The first is the text-map format and must include:
 The original maze setup (no original dimensions). 
 The route that Wolverine takes (+)
 The second is the coordinate-based system, which only needs to include the locations of the route in the order at which Wolverine travels. For example, given the sample input, a possible (correct) output in the text-map format would be:
-@@@@
-W+@$
-@+++
-...@
-@..@
+	@@@@
+	W+@$
+	@+++
+	...@
+	@..@
 
 
 and in the coordinate-based format would be:
-+ 1 1 0
-+ 2 1 0
-+ 2 2 0
-+ 2 3 0
+	+ 1 1 0
+	+ 2 1 0
+	+ 2 2 0
+	+ 2 3 0
 
 
 If a solution does not exist, i.e., there is no possible way for Wolverine to obtain the coin, print "The Wolverine Store is closed."
