@@ -1,38 +1,301 @@
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Queue;
+The Maze
+Wolverine’s Quest is simulated on a two-dimensional map of characters. 
 
-public class p3 {
-	public static void main(String[] args) {		
-		String path = "src/TEST03";
-		File file = new File(path);
-		Scanner obj;
-		
-		try {
-			obj = new Scanner(file);
-			int numRows = obj.nextInt();
-			int numCols = obj.nextInt();
-			int numMazes = obj.nextInt();
-			
-			char[][] a = new char[numRows][numCols];
-	
-			for (int k = 0; k < numMazes; k++) {
-				for (int i = 0; i < numRows; i++) {
-					String str = obj.nextLine();
-					for (int j = 0; j < numCols; j++) {
-						a[i][j] = str.charAt(j);
-					}				
-				}
-			}
-			
-			
-			System.out.println("test");
-			System.out.println(a[1][1]);
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
-}
+
+The maze (top-view) consists of:
+open areas (walkable) denoted by        ‘.’
+wall areas (non-walkable), denoted by     ‘@’
+a Wolverine’s starting position, denoted by  ‘W’
+the location of the Diamond Wolverine Buck ‘$’
+open walkway                                                  ‘|’
+
+Wolverine can only move North, South, East, or West. That is, he may not travel along the diagonals of the maze. Your job is to find a route from Wolverine to the Diamond Wolverine Buck and mark this route with the ‘+’ symbol. For instance, a simple maze might look like this:
+
+@@@@@@@
+@@W...@
+@...@@@
+@.....@
+@@@@@.@
+@.....@
+@@@@$@@
+
+
+The solution might look like this:
+
+
+@@@@@@@
+@@W...@
+@.+.@@@
+@.++++@
+@@@@@+@
+@...++@
+@@@@$@@
+Specifications
+Wolverine will be confined to a rectangular maze that is M-rows by N-columns, i.e., He knows the Diamond Wolverine Buck is somewhere within the maze and will not leave the premises. Wolverine will move to different connected mazes until he finds it. If no wolverine buck is found in a maze, Wolverine will move to the open walkway, which will take him to the next maze. Each Maze has exactly one open walkway leading to another Maze. In other words, in a . Wolverine will be guided to the open walkway (leading to the next maze) or to the Diamond Wolverine Buck.
+Routing Approaches
+You will be developing three routine approaches for Wolverine:
+Find any valid path using a queue
+Find any valid path using a stack
+Find an optimal (shortest distance) path
+
+Queue-based Approach
+
+First, enqueue Wolverine’s start position and then do the following:
+dequeue the next location.
+enqueue all the walkable tiles ('.') immediately North, South, East, and West (in that order) of the location you just dequeued that have never before been enqueued.
+Check to see if any of these spaces hold the coin. If none of them do, go back to Step 1. Remember: Wolverine cannot move diagonally, so spaces to the Northwest, Northeast, Southwest, and Southeast are not considered next to each other and should not be enqueued in this step.
+Once you have found the coin, you must guide Wolverine to it. Remember, Wolverine hates wasting time and does not want to visit the same square twice. That is, the path you give to him should not contain any loops or backtrack onto itself.
+When asking for help regarding your coded algorithm, you must demonstrate your understanding of the algorithm by hand first. 
+Stack-based Approach
+This will be similar to the queue-based approach, except that you will push and pop the locations instead of enqueuing and dequeuing them. Note that the approaches given are high-level, so you will need to expand upon them to finish this project.
+Optimal Path Approach
+You are free to use any routing approach you wish, provided that it is faster than the sum of the runtimes of the queue- and stack-based approaches. Example approaches can be the queue and stack-based approaches described above, a combination of both, or something completely different. Regardless of what you implement, Wolverine must reach his Diamond Wolverine Buck in as few spaces as possible. Note: You will be graded on how many test cases are solved correctly within a (generous) set time limit. No partial credit will be given to solutions that are disconnected, go through walls, leave the maze, or include any illegal moves. You will also be rewarded for finishing quickly, provided that you have passed all the test cases. 
+
+Input and Output Formats
+There are two input formats. The first is the text-based map (shown in the example above). The second is a coordinate-based system where Wolverine (W), the Diamond Wolverine Buck ($), open walkway (|), and the wall (@) locations are listed by their row and column position (in that order). Every other location (unspecified) is assumed to be empty (.). In both cases, the size of the maze (M rows by N columns) is specified as a pair of integers, separated by a single space, as the first line of the input file. The third number is the number of mazes. When there are multiple mazes, the mazes are tiled top-to-bottom. That is, the first line of the file will be: M N R. For example, the following is a legal input file using the text-map format:
+
+
+5 4 1
+@@@@
+W.@$
+@...
+...@
+@..@
+
+
+and the coordinate-based format:
+The first character is the map element, the 2nd is the row location, the 3rd is the column location and the last character is the maze “level”. In the example below, it is 0 since there is a total of one maze so the map information is all for maze 0.
+
+5 4 1
+@ 0 0 0
+@ 0 1 0
+@ 0 2 0
+@ 0 3 0
+@ 3 3 0
+W 1 0 0
+@ 2 0 0
+@ 1 2 0
+$ 1 3 0
+@ 4 0 0 
+@ 4 3 0
+
+Example 2:
+4 4 2
+@@@@
+W.@@
+@..|
+...@
+@@@@
+@..@
+W..@
+@..$
+
+and the coordinate-based format:
+
+The last character denotes the maze level. 
+4 4 2
+@ 0 0 0
+@ 0 1 0
+@ 0 2 0
+@ 0 3 0
+W 1 0 0
+. 1 1 0
+@ 1 2 0
+@ 1 3 0
+@ 2 0 0
+. 2 1 0
+. 2 2 0
+| 2 3 0
+. 3 0 0
+. 3 1 0
+. 3 2 0
+@ 3 3 0
+@ 0 0 1
+@ 0 1 1
+@ 0 2 1
+@ 0 3 1
+@ 1 0 1
+. 1 1 1
+. 1 2 1
+@ 2 3 1
+W 2 0 1
+. 2 1 1
+. 2 2 1
+@ 2 3 1
+@ 3 0 1
+. 3 1 1
+. 3 2 1
+$ 3 3 1
+
+Similarly, there are also two output formats. The first is the text-map format and must include:
+The original maze setup (no original dimensions). 
+The route that Wolverine takes (+)
+The second is the coordinate-based system, which only needs to include the locations of the route in the order at which Wolverine travels. For example, given the sample input, a possible (correct) output in the text-map format would be:
+@@@@
+W+@$
+@+++
+...@
+@..@
+
+
+and in the coordinate-based format would be:
++ 1 1 0
++ 2 1 0
++ 2 2 0
++ 2 3 0
+
+
+If a solution does not exist, i.e., there is no possible way for Wolverine to obtain the coin, print "The Wolverine Store is closed."
+
+For both inputs, use a scanner. For output, you can use a standard System.out command.
+Reporting Runtime
+You must measure the time for the entire search algorithm, including figuring out what exact path is taken. Remember, do not include the time to read in the input or write the output. You are also not allowed to pre-compute/sort/search any of the input data. This will result in 0 points in the timing category (see below). All timing information should be reported as
+Total Runtime: X seconds 
+where X is a double.
+Command Line Arguments (TBA) 
+The description on command line arguments may be altered/removed to fit the lab setup. If you are working early do not spend time on this yet. Your program needs to support the following command-line arguments: (a switch is set if it appears on the command line)
+--Stack (boolean) If this switch is set, use the stack-based approach
+--Queue (boolean) If this switch is set, use the queue-based approach
+--Opt (boolean) If this switch is set, find the shortest path
+--Time (boolean) If this switch is set, print the runtime of the program as described above.
+--Incoordinate (boolean) If this switch is set, the input file is in the coordinate-based system. If the switch is not set, the input file is in the text-map format.
+--Outcoordinate (boolean) If this switch is set, the output file is in the coordinate-based system. If the switch is not set, the output file is in the text-map format.
+--Help (boolean) If this switch is set, print out a brief, informative message on what your program is supposed to do, including what the switches are and what they do. Your program should then exit(0).
+Legal command line inputs must include exactly one of --Stack, --Queue, or --Opt. If none or more than one option is specified, print out an informative error message and then System.exit(-1). 
+
+
+Sample Inputs and Outputs
+Using the stack-based approach with the text-map format for input and output, given:
+4 5 1
+@W@@@
+@..@.
+@@.@@
+@@$@.
+
+
+should result in:
+@W@@@
+@++@.
+@@+@@
+@@$@.
+
+
+Using the queue-based approach with the coordinate-based format for input and output, given:
+10 10 1
+W 3 7 0
+@ 4 5 0 
+@ 4 6 0
+@ 4 7 0
+@ 4 8 0
+@ 6 6 0
+@ 6 8 0
+@ 6 9 0
+$ 8 7 0
+
+
+should result in:
+The last character denotes which maze it is for in case of multi maze test cases. 
++ 3 8 0
++ 3 9 0
++ 4 9 0
++ 5 9 0
++ 5 8 0
++ 5 7 0
++ 6 7 0
++ 7 7 0
+Errors to Check For
+In the text-map format, you should check for:
+illegal characters
+maps that are incomplete (not enough characters/line or not enough lines)
+files that don't start with a pair of positive numbers as the first line
+In the coordinate-based format, you should check for:
+illegal characters in the first column
+coordinates that don't fit inside the maze
+files that don't start with a pair of positive numbers as the first line
+Not having exactly one of --Stack, --Queue, or --Opt switches set
+In all cases, throw the appropriate exception described in the Exceptions section.
+Errors Not to Check For
+In the text-map format, ignore all extra characters on a given line, or on lines below the last line needed.
+In the coordinate-based format, assume the character format is correct, i.e., char int int. However, you do need to check if the character and integers are valid.
+Exceptions
+You must write and use the User-Defined-Exceptions below which are the errors 
+IllegalCommandLineInputsException
+Missing required command line input argument for program
+IllegalMapCharacterException
+	Illegal characters in a map
+IncompleteMapException
+Incomplete map files such as not enough characters for a given row or too few rows
+IncorrectMapFormatException
+Incorrectly formatted maps such as not having a pair of positive numbers in the first line
+Testing Your Program
+Testing your code to see if it produces the correct solution is essential. It is recommended that you test your code thoroughly with test cases beyond what is given. For instance, your code may have a bug that the given examples do not uncover or your code works with a 5x5 grid but not a 10x10. Thus, in addition to your code, you must also submit 5 additional test mazes. Try to have a variety of mazes to make sure that your code is robust and does not have hidden bugs. For example, have small-, medium-, and large-sized maze grids, mazes that are long or wide, and mazes that are sparsely populated (very few obstacles) and densely populated (many obstacles). Store all your tests in a subdirectory called TEST. Each test should be named test[number], where [number] is between 01 and 05. 
+Runtime Evaluation
+Your final project grade will be based partially on the total runtime of the search algorithm (see below). Ten points will be allocated for this. Five points will be available for code that can complete the hardest benchmarks within a reasonable amount of time (10-second timeout). The autograder can give you a good indication of this. Five additional points will be awarded for completing the test cases quickly (competitive runtime), independent of each test case. provided that you have passed all the test cases.
+Design Plan
+By 11:55:00 pm on 3/12/2025, you must fill out a design plan (available on Canvas) which will detail your plans for this project. Five points of your grade will be available for the design plan. Fill out the plan, zip the file into a compressed folder (.zip) and submit it to the autograder. You can name the zip file whatever you prefer, but make sure that your design plan is called design.txt. In your submitted design plan, all the prompts originally in the document must remain there. Your answers should begin on a new line but not begin with a '@' symbol. 
+
+Grading
+The grading for Project 1 is out of 100 points (subject to change)
+20 points - Documented progress via GitHub commits and pushes.
+30 points - A working (passing all test cases) stack implementation of the program.
+5   points - A working implementation for multiple rooms
+20 points - A working (passing all test cases) queue implementation of the program.
+10 points - A working (passing all test cases) optimal path implementation of the program.
+5   points - Coding style.
+5   points - Submission of 10 test cases. (9 personal and 1 traded)
+5   points - Design plan.
+
+Submission to Autograder
+Handling autograder input files:
+The main “driver” class that handles the program inputs --Stack, --Queue etc should be called p2.java.
+The input file (map) will be the very last input argument i.e. arg[arg.length-1]. 
+
+Zipping your files
+You should select all of the files that make up your project then right-click and Send To -> Compressed Folder (Windows). For macs, you can select them and then select compress. 
+
+When unzipped there should be no sub-folders that the source files go into which is why you’re selecting them and sending them to be compressed rather than putting them in a folder then compressing the folder. 
+
+See the example below of selecting files and compressing them.
+
+Submission Time and Late Policy
+The project is officially due at 11pm on _____________. However, the submission server will stay online until approx. 11:45pm.
+
+As mentioned in class, you will have one "free" late day for all of the projects. That is, you are allowed to continue submitting for another 24 hours after the server is officially turned off. You are free to use this one day any time you wish, including for this project. If you are submitting past the deadline, contact the teaching staff so we are aware of this.
+
+You are encouraged to organize your code using different java classes and take advantage of inheritance, overriding, and overloading whenever possible. However, organize the code so that no packages are required. Since you may have different classes, you are asked to name your main runnable class p1.java. The submission to the autograder requires that you zip the files together and submit the zip file as p1.zip. Only include java source files that are being used for the project. 
+
+Extra Credit
+10 points of extra credit are available for this project. You should not work on this until you have Project 1 fully operational. Any credit received from this portion will not affect the curve for the class, just your overall position. That is, the mean and standard deviation for the class will be calculated without these points and then your score will have these points added on separately. The assignment is an extension to the optimal path-finding problem. Instead of leading Wolverine to one Diamond Buck, you will keep trying until you run out of bucks to find. Each additional buck will be represented with another $ on the text map or another line in the coordinate-based system. For this problem, you must find a path that covers the least amount of blank spaces. That is, you are allowed to backtrack without penalty (single Bucks help Wolverine's memory but not overall endurance). For example, consider the following maze:
+
+6 10 1
+@@@$@@@@@@
+@@@......@
+@@.....$@.
+@...@@@@@@
+@W..@.....
+@@@@@.....
+
+
+In the same format, the optimal path in this maze would be:
+6 10 1
+@@@$@@@@@@
+@@@+.....@
+@@.++++$@.
+@..+@@@@@@
+@W++@.....
+@@@@@.....
+
+
+Note that even though there is some backtracking, the total number of spaces taken up is 8. The number of bucks can be arbitrary (but at least 2) along with the size of the maze. Your only hard constraints will be a reasonable time limit and the correctness of the route produced. Some partial credit will be available, but only for solutions that are very close to the optimal in all cases.
+
+For extra credit, make sure you’re processing the command line switch --EC which indicates whether or not there are multiple bucks on the map. 
+
+Command-Line Switches
+The extra credit binary should ignore the --Opt, --Queue, and --Stack switches. In addition, --OutCoordinate should be disabled. Note that the input format can still be in either text-map or coordinate-based format. The last command-line switch is the name of the file for the map. Do not hardcode any file names. 
+Runtime Limit
+Given N number of bucks available in the maze, your runtime must be upper-bounded by 3*N*(time of the optimal path generator for a buck).
+Hints and Advice
+Start early! The earlier you start, the more questions you'll be able to ask.
+Print debugging statements to standard output as you develop your program. Just remember to remove/silence them before you submit your final version.
+Although you need to think about how to solve multiple mazes, start with a simple map with only one room. 
+Good luck!

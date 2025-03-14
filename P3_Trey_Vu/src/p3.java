@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Queue;
 
 public class p3 {
@@ -46,6 +47,8 @@ public class p3 {
 				}
 			}
 			
+			
+			
 		} catch (FileNotFoundException e) {
 			// handle exception
 			System.out.println(e);
@@ -65,7 +68,7 @@ public class p3 {
 		}
 		System.out.println("Something broke with findStartingPosition()");
 		return null;
-	}
+	} 
 	
 	public static boolean findChar(char character) {
 		if (character == '@') {
@@ -79,6 +82,25 @@ public class p3 {
 		} else if (character == '$') {
 			return true;
 		}
+		return false;
+	}
+	
+	public static ArrayList<String> checkPosition(Tile[][][] b, Tile t) {
+		int numRows = b.length;
+		int numCols = b[0].length;
+		ArrayList<String> possiblePositions = new ArrayList<String>();
+		
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numCols; j++) {
+				
+			}
+		}
+	}
+	
+	public static boolean isEmpty(char character) {
+		if (character == '.') {
+			return true;
+		} 
 		return false;
 	}
 }
