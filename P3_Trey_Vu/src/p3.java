@@ -8,7 +8,7 @@ import java.util.Queue;
 public class p3 {
 	public static void main(String[] args) {		
 		readMap("src/TEST03");
-	}
+	} 
 	
 	public static void readMap(String filename) {
 		
@@ -20,6 +20,7 @@ public class p3 {
 			int numCols 	= scanner.nextInt();
 			int numRooms 	= scanner.nextInt();
 			Tile[][][] board = new Tile[numRows][numCols][numRooms];
+			boolean[][][] exploredBoard = new boolean[numRows][numCols][numRooms];
 			
 			int rowIndex = 0;
 			int colIndex = 0;
@@ -50,18 +51,43 @@ public class p3 {
 			
 			Queue<Tile> q = new LinkedList<>();
 			Tile startingPosition = findStartingPosition(board);
+//			exploredBoard[startingPosition.getRow()][startingPosition.getCol()][startingPosition.getRoom()] = true;
 			q.add(startingPosition);
+			boolean coinFound = false;
+			boolean doorFound = false;
 			
-			while () {
-				Tile t = q.peek();
-				ArrayList<String> possiblePositions = checkPosition(board, t);
+			
+			while (!coinFound) {	
+				Tile t = q.remove();
+				exploredBoard[t.getRow()][t.getCol()][t.getRoom()] = true;
+				
+				ArrayList<String> possiblePositions = checkPosition(board, exploredBoard, t);
 				for (int i = 0; i < possiblePositions.size(); i++) {
 					String str = possiblePositions.get(i);
 					if (str.equals("N")) {
-						q.add(t)
+						char c = board[t.getRow()-1][t.getCol()][t.getRoom()].getChar();
+						Tile N = new Tile(t.getRow()-1, t.getCol(), t.getRoom(), c);
+						q.add(N);
+					} else if (str.equals("S")) {
+						char c = board[t.getRow()+1][t.getCol()][t.getRoom()].getChar();
+						Tile S = new Tile(t.getRow()+1, t.getCol(), t.getRoom(), c);
+						q.add(S);
+					} else if (str.equals("E")) {
+						char c = board[t.getRow()][t.getCol()+1][t.getRoom()].getChar();
+						Tile E = new Tile(t.getRow(), t.getCol()+1, t.getRoom(), c);
+						q.add(E);
+					} else if (str.equals("W")) {
+						char c = board[t.getRow()][t.getCol()-1][t.getRoom()].getChar();
+						Tile W = new Tile(t.getRow(), t.getCol()-1, t.getRoom(), c);
+						q.add(W);
 					}
+					
+					if (q.peek().getChar() == '$') {
+						coinFound = true;
+					} else if (q.peek().getChar() == '|') {
+						doorFound = true;
+					} 
 				}
-				
 			}
 			
 			
@@ -73,12 +99,10 @@ public class p3 {
 	}
 	
 	public static Tile findStartingPosition(Tile[][][] b) {
-		for (int k = 0; k < b[0][0].length; k++) {
-			for (int i = 0; i < b.length; i++) {
-				for (int j = 0; j < b[i].length; j++) {
-					if (b[i][j][k].getChar() == 'W') {
-						return b[i][j][k];
-					}
+		for (int i = 0; i < b.length; i++) {
+			for (int j = 0; j < b[i].length; j++) {
+				if (b[i][j][0].getChar() == 'W') {
+					return b[i][j][0];
 				}
 			}
 		}
@@ -86,7 +110,7 @@ public class p3 {
 		return null;
 	} 	
 	
-	public static ArrayList<String> checkPosition(Tile[][][] b, Tile t) {
+	public static ArrayList<String> checkPosition(Tile[][][] b, boolean[][][] e, Tile t) {
 		int numRows = b.length;
 		int numCols = b[0].length;
 		int numRooms = b[0][0].length;
@@ -103,7 +127,7 @@ public class p3 {
 					int pRow = position.getRow();
 					int pCol = position.getCol();
 					
-					if (c == '.') {
+					if (c == '.' || c == '$' || c == '|' && e[i][j][k] == false) {
 						if (col == pCol && row == pRow-1) {
 							possiblePositions.add("N");
 						} else if (row == pRow && col == pCol+1) {
