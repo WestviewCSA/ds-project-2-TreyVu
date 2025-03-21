@@ -1,34 +1,34 @@
-import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 
 public class p3 {
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		readMap("src/TEST03");
-	} 
-	
+	}
+
 	public static void readMap(String filename) {
-		
+
 		try {
 			File file  = new File(filename);
-			Scanner scanner = new Scanner(file); 			
-			
+			Scanner scanner = new Scanner(file);
+
 			int numRows 	= scanner.nextInt();
 			int numCols 	= scanner.nextInt();
 			int numRooms 	= scanner.nextInt();
 			Tile[][][] board = new Tile[numRows][numCols][numRooms];
 			boolean[][][] exploredBoard = new boolean[numRows][numCols][numRooms];
-			
+
 			int rowIndex = 0;
 			int colIndex = 0;
 			int roomIndex = 1;
-			
+
 			// scan each row
 			while (scanner.hasNextLine()) {
-				String row = scanner.nextLine();			
+				String row = scanner.nextLine();
 				if (row.length() > 0) {
 					// scan each column
 					for (int i = 0; i < numCols && i < row.length(); i++) {
@@ -37,33 +37,32 @@ public class p3 {
 							Tile obj = new Tile(rowIndex, i, roomIndex, element);
 							board[rowIndex][colIndex][roomIndex] = obj;
 							colIndex++;
-						}						
+						}
 					}
 					rowIndex++;
 				}
-				
+
 				// update rooms and rows
 				if (rowIndex > numRows) {
 					rowIndex = 0;
 					roomIndex++;
 				}
 			}
-			
+
 			Queue<Tile> q = new LinkedList<>();
 			Tile startingPosition = findStartingPosition(board);
 //			exploredBoard[startingPosition.getRow()][startingPosition.getCol()][startingPosition.getRoom()] = true;
 			q.add(startingPosition);
 			boolean coinFound = false;
 			boolean doorFound = false;
-			
-			
-			while (!coinFound) {	
+
+
+			while (!coinFound) {
 				Tile t = q.remove();
 				exploredBoard[t.getRow()][t.getCol()][t.getRoom()] = true;
-				
+
 				ArrayList<String> possiblePositions = checkPosition(board, exploredBoard, t);
-				for (int i = 0; i < possiblePositions.size(); i++) {
-					String str = possiblePositions.get(i);
+				for (String str : possiblePositions) {
 					if (str.equals("N")) {
 						char c = board[t.getRow()-1][t.getCol()][t.getRoom()].getChar();
 						Tile N = new Tile(t.getRow()-1, t.getCol(), t.getRoom(), c);
@@ -81,44 +80,44 @@ public class p3 {
 						Tile W = new Tile(t.getRow(), t.getCol()-1, t.getRoom(), c);
 						q.add(W);
 					}
-					
+
 					if (q.peek().getChar() == '$') {
 						coinFound = true;
 					} else if (q.peek().getChar() == '|') {
 						doorFound = true;
-					} 
+					}
 				}
 			}
-			
-			
+
+
 		} catch (FileNotFoundException e) {
 			// handle exception
 			System.out.println(e);
 			System.out.println("gg");
 		}
 	}
-	
+
 	public static Tile findStartingPosition(Tile[][][] b) {
-		for (int i = 0; i < b.length; i++) {
-			for (int j = 0; j < b[i].length; j++) {
-				if (b[i][j][0].getChar() == 'W') {
-					return b[i][j][0];
+		for (Tile[][] element : b) {
+			for (int j = 0; j < element.length; j++) {
+				if (element[j][0].getChar() == 'W') {
+					return element[j][0];
 				}
 			}
 		}
 		System.out.println("Something broke with findStartingPosition()");
 		return null;
-	} 	
-	
+	}
+
 	public static ArrayList<String> checkPosition(Tile[][][] b, boolean[][][] e, Tile t) {
 		int numRows = b.length;
 		int numCols = b[0].length;
 		int numRooms = b[0][0].length;
-		
+
 		int row = t.getRow();
 		int col = t.getCol();
-		
-		ArrayList<String> possiblePositions = new ArrayList<String>();
+
+		ArrayList<String> possiblePositions = new ArrayList<>();
 		for (int k = 0; k < numRooms; k++) {
 			for (int i = 0; i < numRows; i++) {
 				for (int j = 0; j < numCols; j++) {
@@ -126,8 +125,8 @@ public class p3 {
 					char c = position.getChar();
 					int pRow = position.getRow();
 					int pCol = position.getCol();
-					
-					if (c == '.' || c == '$' || c == '|' && e[i][j][k] == false) {
+
+					if (c == '.' || c == '$' || c == '|' && !e[i][j][k]) {
 						if (col == pCol && row == pRow-1) {
 							possiblePositions.add("N");
 						} else if (row == pRow && col == pCol+1) {

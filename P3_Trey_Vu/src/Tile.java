@@ -2,7 +2,7 @@
 public class Tile {
 	private int row, col, room;
 	private char character;
-	
+
 	public Tile(int row, int col, int room, char character) {
 		super();
 		this.row = row;
@@ -10,7 +10,7 @@ public class Tile {
 		this.room = room;
 		this.character = character;
 	}
-	
+
 	public int getRow() {
 		return row;
 	}
@@ -35,6 +35,6 @@ public class Tile {
 	public void setChar(char type) {
 		this.character = type;
 	}
-	
-	
+
+
 }

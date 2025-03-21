@@ -4,7 +4,7 @@ public class Map {
 	private int numCols;
 	private int numRooms;
 	private Tile[][][] map = new Tile[numRows][numCols][numRooms];
-	
+
 	public Map(int numRows, int numCols, int numRooms, Tile[][][] map) {
 		super();
 		this.numRows = numRows;
@@ -12,7 +12,7 @@ public class Map {
 		this.numRooms = numRooms;
 		this.map = map;
 	}
-	
+
 	public int getNumRows() {
 		return numRows;
 	}
