@@ -11,28 +11,51 @@ public class Maze {
 	private static boolean isTextBased, isCoordinateBased;
 	
 	public Maze(String filename) {
-		try {
-			File file = new File(filename);
-			Scanner scanner = new Scanner(file);
-			
-			numRows 	= scanner.nextInt();
-			numCols 	= scanner.nextInt();
-			numRooms 	= scanner.nextInt();
-			map = new char[numRooms][numRows][numCols];
-			
-			scanner.nextLine();
-			if (scanner.hasNextInt()) {
-				isCoordinateBased = true;
-			} else {
-				isTextBased = true;
-			}
-			
-		} catch (FileNotFoundException e) {
-			// handle exception
-			System.out.println(e);
-			System.out.println("gg");
-		}	
+	    try {
+	        File file = new File(filename);
+	        Scanner scanner = new Scanner(file);
+
+	        numRows = scanner.nextInt();
+	        numCols = scanner.nextInt();
+	        numRooms = scanner.nextInt();
+	        map = new char[numRooms][numRows][numCols];
+	        
+	        // Move to the next line after reading dimensions
+	        scanner.nextLine(); 
+
+	        // Read the first non-empty line of the maze
+	        while (scanner.hasNextLine()) {
+	            String line = scanner.nextLine().trim();
+	            if (!line.isEmpty()) {  // Ignore empty lines
+	                String[] tokens = line.split("\\s+"); // Split by spaces
+	                if (tokens.length >= 2 && tokens[1].matches("\\d+")) {
+	                    isCoordinateBased = true;
+	                    System.out.println("Detected: Coordinate-Based");
+	                } else {
+	                    isTextBased = true;
+	                    System.out.println("Detected: Text-Based");
+	                }
+	                break; // We only need to check one line
+	            }
+	        }
+	        
+	        if (isTextBased) {
+	        	while (scanner.hasNextLine()) {
+					String row = scanner.nextLine();			
+					if (!row.isEmpty()) {
+						
+					}
+				}
+	        } else if (isCoordinateBased) {
+	        	
+	        }
+
+	    } catch (FileNotFoundException e) {
+	    	System.out.println(e);
+	        System.out.println("Error: File not found.");
+	    }
 	}
+
 	
 	public Tile getStart() {
 		
