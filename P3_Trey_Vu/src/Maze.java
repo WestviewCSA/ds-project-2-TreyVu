@@ -128,6 +128,18 @@ public class Maze {
     	return map;
     }
     
+    public int getNumRooms() {
+        return numRooms;
+    }
+
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public int getNumCols() {
+        return numCols;
+    }
+    
     public void printMaze() {
         for (int room = 0; room < numRooms; room++) {
             System.out.println("Maze Level: " + room);
