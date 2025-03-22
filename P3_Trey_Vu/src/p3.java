@@ -14,4 +14,4 @@ public class p3 {
         maze2.printMaze(); // Print to verify
     }
 }
-
+ 
