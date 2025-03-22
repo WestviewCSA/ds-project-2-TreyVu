@@ -25,47 +25,55 @@ public class MazeSolver {
         while (!q.isEmpty()) {
             Tile t = q.poll(); // Dequeue the current tile
 
-            // Check if we reached the goal ('$')
+            // Check if we reached the goal ('$') BEFORE moving through a doorway
             if (t.getChar() == '$') {
+                reconstructPath(t);
                 System.out.println("Path found!");
                 return; // Stop searching
-            } else if (t.getChar() == '|') {
-                int currentRoom = t.getRoom();
-                int nextRoom = currentRoom + 1;
-
-                // Ensure next room exists
-                if (nextRoom < maze.getNumRooms()) {
-                    for (int row = 0; row < maze.getNumRows(); row++) {
-                        for (int col = 0; col < maze.getNumCols(); col++) {
-                            if (maze.getMap()[nextRoom][row][col] == '|') {
-                                // Move Wolverine to the new doorway in the next maze
-                                Tile nextDoorway = new Tile(row, col, nextRoom, '|');
-                                q.add(nextDoorway);
-                                visited[nextRoom][row][col] = true;
-                                System.out.println("Wolverine moved to the next maze!");
-                                break;
-                            }
-                        }
-                    }
-                }
             }
 
-
-            // Explore the four possible directions
+            // Explore the four possible directions (N, S, E, W)
             for (int i = 0; i < 4; i++) {
                 int newRow = t.getRow() + dRow[i];
                 int newCol = t.getCol() + dCol[i];
                 int room = t.getRoom(); // Stay in the same room
 
-                // Check if the move is valid
                 if (newRow >= 0 && newRow < maze.getNumRows() &&
                     newCol >= 0 && newCol < maze.getNumCols() &&
                     !visited[room][newRow][newCol] &&
                     maze.isWalkable(room, newRow, newCol)) {
 
-                    // Mark as visited and add to queue
+                    // If we find the coin, prioritize it
+                    if (maze.getMap()[room][newRow][newCol] == '$') {
+                        reconstructPath(new Tile(newRow, newCol, room, '$'));
+                        System.out.println("Path found!");
+                        return;
+                    }
+
+                    // Otherwise, mark as visited and add to queue
                     visited[room][newRow][newCol] = true;
+                    prev[room][newRow][newCol] = t;
                     q.add(new Tile(newRow, newCol, room, maze.getMap()[room][newRow][newCol]));
+                }
+            }
+
+            // Only move through the doorway IF no '$' was found in this room
+            if (t.getChar() == '|') {
+                int currentRoom = t.getRoom();
+                int nextRoom = currentRoom + 1;
+
+                if (nextRoom < maze.getNumRooms()) {
+                    for (int row = 0; row < maze.getNumRows(); row++) {
+                        for (int col = 0; col < maze.getNumCols(); col++) {
+                            if (maze.getMap()[nextRoom][row][col] == '|') {
+                                visited[nextRoom][row][col] = true;
+                                prev[nextRoom][row][col] = t;
+                                q.add(new Tile(row, col, nextRoom, '|'));
+                                System.out.println("Wolverine moved to the next maze!");
+                                return;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -76,9 +84,13 @@ public class MazeSolver {
     private void reconstructPath(Tile goal) {
         Tile t = goal;
         while (t != null && t.getChar() != 'W') { // Stop when reaching Wolverine
-            maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] = '+'; // Mark path
-            t = prev[t.getRoom()][t.getRow()][t.getCol()]; // Move to parent tile
+            if (maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] != '$') { // Don't overwrite $
+                maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] = '+'; // Mark path
+            }
+            t = prev[t.getRoom()][t.getRow()][t.getCol()]; // Move to previous tile
         }
     }
+
+
 
 }

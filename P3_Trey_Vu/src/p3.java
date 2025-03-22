@@ -7,11 +7,13 @@ import java.util.Queue;
 
 public class p3 {
     public static void main(String[] args) {
-        Maze maze = new Maze("src/test_maze.txt"); // Load text-based maze
-        maze.printMaze(); // Print to verify
-        
-        Maze maze2 = new Maze("src/test_maze_coordinates.txt"); // Load coordinate-based maze
-        maze2.printMaze(); // Print to verify
+        Maze maze = new Maze("src/TEST09"); // Load text-based maze        
+        MazeSolver solver = new MazeSolver(maze);
+        solver.solveWithQueue(); // Run BFS
+
+        // Print the final map to see Wolverine's path
+        System.out.println("Final Maze:");
+        maze.printMaze(); // Implement a `printMaze()` method in Maze
     }
 }
  
