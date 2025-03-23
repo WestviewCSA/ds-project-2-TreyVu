@@ -59,21 +59,39 @@ public class Maze {
             if (isTextBased) {
                 for (int room = 0; room < numRooms; room++) {
                     for (int row = 0; row < numRows; row++) {
-                        if (scanner.hasNextLine()) {
-                            String line = scanner.nextLine().trim();
-                            for (int col = 0; col < numCols && col < line.length(); col++) {
-                                char c = line.charAt(col);
+                        // If the file doesn't have enough lines, you can break or throw an exception
+                        if (!scanner.hasNextLine()) {
+                            // Optionally throw IncompleteMapException or just break
+                            break;
+                        }
+                        
+                        // Read the line, remove trailing spaces
+                        String line = scanner.nextLine().trim();
+                        // Expect line to have exactly numCols characters (no spaces in between)
+                        
+                        for (int col = 0; col < numCols && col < line.length(); col++) {
+                            char c = line.charAt(col);
+                            
+                            // Only accept recognized characters; default to '.'
+                            if (isGameChar(c)) {
                                 map[room][row][col] = c;
-
-                                // Track key positions
-                                if (c == 'W') start = new Tile(row, col, room, c);
-                                if (c == '$') goal = new Tile(row, col, room, c);
-                                if (c == '|') exit = new Tile(row, col, room, c);
+                            } else {
+                                map[room][row][col] = '.';
+                            }
+                            
+                            // Track special characters
+                            if (c == 'W') {
+                                start = new Tile(row, col, room, c);
+                            } else if (c == '$') {
+                                goal = new Tile(row, col, room, c);
+                            } else if (c == '|') {
+                                exit = new Tile(row, col, room, c);
                             }
                         }
                     }
                 }
             }
+
 
             // Read coordinate-based format
             if (isCoordinateBased) {
@@ -110,6 +128,11 @@ public class Maze {
         	System.out.println(e);
             System.out.println("Error: File not found.");
         }
+    }
+    
+    private boolean isGameChar(char c) {
+        // Only accept these characters as valid
+        return (c == '@' || c == '.' || c == 'W' || c == '$' || c == '|');
     }
 
     public Tile getStart() { 
