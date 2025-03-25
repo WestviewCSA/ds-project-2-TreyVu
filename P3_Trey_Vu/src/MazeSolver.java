@@ -270,7 +270,7 @@ public class MazeSolver {
     }
 }
 
-
+ 
 
 	public boolean solveWithOpt(Tile startTile) {
 	    // Clear visited/prev
@@ -282,7 +282,7 @@ public class MazeSolver {
 	            }
 	        }
 	    }
-
+ 
 	    Queue<Tile> q = new LinkedList<>();
 	    q.add(startTile);
 	    visited[startTile.getRoom()][startTile.getRow()][startTile.getCol()] = true;
