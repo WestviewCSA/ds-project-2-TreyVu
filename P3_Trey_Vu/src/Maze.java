@@ -14,6 +14,7 @@ public class Maze {
         try {
             File file = new File(filename);
             Scanner scanner = new Scanner(file);
+            System.out.println("Map Name: " + filename);
             
          // read first line
             if (!scanner.hasNextLine()) {
