@@ -34,9 +34,9 @@ public class Maze {
                 throw new IncorrectMapFormatException("M, N, R not integers");
             }
 
-            numRows = scanner.nextInt();
-            numCols = scanner.nextInt();
-            numRooms = scanner.nextInt();
+            numRows = M;
+            numCols = N;
+            numRooms = R;
             map = new char[numRooms][numRows][numCols];
             
 	        // Initialize map with '.' before filling it
