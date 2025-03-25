@@ -112,9 +112,9 @@ public class MazeSolver {
         }
 
         // 5. If queue empties with no `$` or `|`, no path from this W
-        System.out.println("No path found in this room (starting from "
-                           + startTile.getRow() + "," + startTile.getCol() + ").");
-        System.out.println();
+//        System.out.println("No path found in this room (starting from "
+//                           + startTile.getRow() + "," + startTile.getCol() + ").");
+//        System.out.println();
         return false;
     }
 
@@ -137,7 +137,7 @@ public class MazeSolver {
             pathTiles.add(t);
         }
 
-        System.out.println("Queue-Based Route (start → goal):");
+//        System.out.println("Queue-Based Route (start → goal):");
         for (int i = pathTiles.size() - 1; i >= 0; i--) {
             Tile step = pathTiles.get(i);
             System.out.printf("+ %d %d %d\n", step.getRow(), step.getCol(), step.getRoom());
@@ -203,16 +203,16 @@ public class MazeSolver {
                 int room = t.getRoom();
 
                 // DEBUG: Print neighbor checks
-                System.out.println("    Checking neighbor (room=" + room
-                                   + ", row=" + newRow
-                                   + ", col=" + newCol + ")");
+//                System.out.println("    Checking neighbor (room=" + room
+//                                   + ", row=" + newRow
+//                                   + ", col=" + newCol + ")");
 
                 // Validate bounds
                 if (newRow >= 0 && newRow < maze.getNumRows() &&
                     newCol >= 0 && newCol < maze.getNumCols()) {
 
                     char neighborChar = maze.getMap()[room][newRow][newCol];
-                    System.out.println("    Neighbor char=" + neighborChar);
+//                    System.out.println("    Neighbor char=" + neighborChar);
 
                     // Check if not visited & is walkable
                     if (!visited[room][newRow][newCol] &&
@@ -223,27 +223,27 @@ public class MazeSolver {
                         stack.push(new Tile(newRow, newCol, room, neighborChar));
 
                         // DEBUG: Print pushing
-                        System.out.println("    -> PUSHING neighbor ("
-                                           + newRow + "," + newCol
-                                           + ") char=" + neighborChar);
+//                        System.out.println("    -> PUSHING neighbor ("
+//                                           + newRow + "," + newCol
+//                                           + ") char=" + neighborChar);
                     } else {
                         // DEBUG: Print reason for skip
                         if (visited[room][newRow][newCol]) {
-                            System.out.println("    -> Already visited, skipping.");
+//                            System.out.println("    -> Already visited, skipping.");
                         } else {
-                            System.out.println("    -> Not walkable, skipping.");
+//                            System.out.println("    -> Not walkable, skipping.");
                         }
                     }
                 } else {
                     // Out of bounds
-                    System.out.println("    -> Out of bounds, skipping.");
+//                    System.out.println("    -> Out of bounds, skipping.");
                 }
             }
         }
 
         // 5. If stack empties with no `$` or `|`, no path from this W
-        System.out.println("No path found in this room (starting from "
-                           + startTile.getRow() + "," + startTile.getCol() + ").");
+//        System.out.println("No path found in this room (starting from "
+//                           + startTile.getRow() + "," + startTile.getCol() + ").");
         System.out.println();
         return false;
     }
@@ -332,8 +332,8 @@ public class MazeSolver {
 	    }
 
 	    // If BFS empties out without finding '$' or '|'
-	    System.out.println("No path found in this room (starting from " 
-	                       + startTile.getRow() + "," + startTile.getCol() + ").");
+//	    System.out.println("No path found in this room (starting from " 
+//	                       + startTile.getRow() + "," + startTile.getCol() + ").");
 	    System.out.println();
 	    return false;
 	}
@@ -343,10 +343,10 @@ public class MazeSolver {
 	    Tile t = goal;
 
 	    while (t != null && t.getChar() != 'W') {
-	    	 System.out.println("DEBUG: Backtracking from (room=" + t.getRoom()
-             + ", row=" + t.getRow()
-             + ", col=" + t.getCol()
-             + ") char=" + t.getChar());
+//	    	 System.out.println("DEBUG: Backtracking from (room=" + t.getRoom()
+//             + ", row=" + t.getRow()
+//             + ", col=" + t.getCol()
+//             + ") char=" + t.getChar());
 	        if (maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] != '$') {
 	            maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] = '+';
 	        }

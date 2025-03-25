@@ -14,7 +14,7 @@ public class p3 {
             System.exit(-1);
         } 
         // You can also catch (FileNotFoundException e) if your Maze constructor throws it
-    }
+    } 
 
     private static void parseAndRun(String[] args)
             throws FileNotFoundException,
