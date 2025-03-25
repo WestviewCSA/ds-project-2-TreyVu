@@ -273,7 +273,7 @@ public class MazeSolver {
  
 
 	public boolean solveWithOpt(Tile startTile) {
-	    // Clear visited/prevkjkj d
+	    // Clear visited/prev
 	    for (int r = 0; r < visited.length; r++) {
 	        for (int i = 0; i < visited[r].length; i++) {
 	            for (int j = 0; j < visited[r][i].length; j++) {
