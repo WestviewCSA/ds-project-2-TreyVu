@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Maze {
@@ -7,11 +8,31 @@ public class Maze {
     private Tile start, goal, exit;
     private char[][][] map;
     private boolean isTextBased, isCoordinateBased;
+    private ArrayList<Tile> allWolverines = new ArrayList<>();
 
-    public Maze(String filename) {
+    public Maze(String filename) throws IncorrectMapFormatException, FileNotFoundException {
         try {
             File file = new File(filename);
             Scanner scanner = new Scanner(file);
+            
+         // read first line
+            if (!scanner.hasNextLine()) {
+                throw new IncorrectMapFormatException("File is empty; expected M N R");
+            }
+            String firstLine = scanner.nextLine().trim();
+            String[] tokens = firstLine.split("\\s+");
+            if (tokens.length < 3) {
+                throw new IncorrectMapFormatException("Expected M N R in first line");
+            }
+            // parse M, N, R
+            int M, N, R;
+            try {
+                M = Integer.parseInt(tokens[0]);
+                N = Integer.parseInt(tokens[1]);
+                R = Integer.parseInt(tokens[2]);
+            } catch (NumberFormatException e) {
+                throw new IncorrectMapFormatException("M, N, R not integers");
+            }
 
             numRows = scanner.nextInt();
             numCols = scanner.nextInt();
@@ -33,8 +54,8 @@ public class Maze {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
                 if (!line.isEmpty()) {
-                    String[] tokens = line.split("\\s+");
-                    if (tokens.length >= 2 && tokens[1].matches("\\d+")) {
+                    String[] tokens2 = line.split("\\s+");
+                    if (tokens2.length >= 2 && tokens2[1].matches("\\d+")) {
                         isCoordinateBased = true;
                         System.out.println("Detected: Coordinate-Based");
                     } else {
@@ -81,7 +102,13 @@ public class Maze {
                             
                             // Track special characters
                             if (c == 'W') {
-                                start = new Tile(row, col, room, c);
+                            	// Always add this W to the list
+                                allWolverines.add(new Tile(row, col, room, c));
+                            	
+                                // Only set start if we don't have one yet
+                                if (start == null) {
+                                    start = new Tile(row, col, room, c);
+                                }
                             } else if (c == '$') {
                                 goal = new Tile(row, col, room, c);
                             } else if (c == '|') {
@@ -98,12 +125,12 @@ public class Maze {
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine().trim();
                     if (!line.isEmpty()) {
-                        String[] tokens = line.split("\\s+");
-                        if (tokens.length == 4) {
-                            char type = tokens[0].charAt(0);
-                            int row = Integer.parseInt(tokens[1]);
-                            int col = Integer.parseInt(tokens[2]);
-                            int room = Integer.parseInt(tokens[3]);
+                        String[] tokens3 = line.split("\\s+");
+                        if (tokens3.length == 4) {
+                            char type = tokens3[0].charAt(0);
+                            int row = Integer.parseInt(tokens3[1]);
+                            int col = Integer.parseInt(tokens3[2]);
+                            int room = Integer.parseInt(tokens3[3]);
 
                             map[room][row][col] = type;
 
@@ -133,6 +160,10 @@ public class Maze {
     private boolean isGameChar(char c) {
         // Only accept these characters as valid
         return (c == '@' || c == '.' || c == 'W' || c == '$' || c == '|');
+    }
+    
+    public ArrayList<Tile> getAllWolverines() {
+        return allWolverines;
     }
 
     public Tile getStart() { 
