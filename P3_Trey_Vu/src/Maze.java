@@ -58,10 +58,10 @@ public class Maze {
                     String[] tokens2 = line.split("\\s+");
                     if (tokens2.length >= 2 && tokens2[1].matches("\\d+")) {
                         isCoordinateBased = true;
-//                        System.out.println("Detected: Coordinate-Based");
+                        System.out.println("Detected: Coordinate-Based");
                     } else {
                         isTextBased = true;
-//                        System.out.println("Detected: Text-Based");
+                        System.out.println("Detected: Text-Based");
                     }
                     break;
                 }

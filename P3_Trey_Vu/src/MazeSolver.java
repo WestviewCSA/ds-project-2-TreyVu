@@ -268,7 +268,7 @@ public class MazeSolver {
         Tile step = pathTiles.get(i);
         System.out.printf("+ %d %d %d\n", step.getRow(), step.getCol(), step.getRoom());
     }
-}
+	}
 
  
 
@@ -332,8 +332,8 @@ public class MazeSolver {
 	    }
 
 	    // If BFS empties out without finding '$' or '|'
-//	    System.out.println("No path found in this room (starting from " 
-//	                       + startTile.getRow() + "," + startTile.getCol() + ").");
+	    System.out.println("No path found in this room (starting from " 
+	                       + startTile.getRow() + "," + startTile.getCol() + ").");
 	    System.out.println();
 	    return false;
 	}
@@ -343,10 +343,10 @@ public class MazeSolver {
 	    Tile t = goal;
 
 	    while (t != null && t.getChar() != 'W') {
-//	    	 System.out.println("DEBUG: Backtracking from (room=" + t.getRoom()
-//             + ", row=" + t.getRow()
-//             + ", col=" + t.getCol()
-//             + ") char=" + t.getChar());
+	    	 System.out.println("DEBUG: Backtracking from (room=" + t.getRoom()
+             + ", row=" + t.getRow()
+             + ", col=" + t.getCol()
+             + ") char=" + t.getChar());
 	        if (maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] != '$') {
 	            maze.getMap()[t.getRoom()][t.getRow()][t.getCol()] = '+';
 	        }
