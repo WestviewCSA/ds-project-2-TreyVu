@@ -137,15 +137,17 @@ public class Maze {
 
                             // Track key positions
                             if (type == 'W') {
-                            	start = new Tile(row, col, room, type);
+                                start = new Tile(row, col, room, type);
+                                allWolverines.add(new Tile(row, col, room, type)); // Add this line
                             }
                             if (type == '$') {
-                            	goal = new Tile(row, col, room, type);
+                                goal = new Tile(row, col, room, type);
                             }
                             if (type == '|') {
-                            	exit = new Tile(row, col, room, type);
+                                exit = new Tile(row, col, room, type);
                             }
                         }
+
                     }
                 }
             }
