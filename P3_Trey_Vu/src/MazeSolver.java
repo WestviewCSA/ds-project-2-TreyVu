@@ -273,7 +273,9 @@ public class MazeSolver {
  
 
 	public boolean solveWithOpt(Tile startTile) {
-	    // Clear visited/prev
+	    // Clear visited and prev arrays.
+		
+		
 	    for (int r = 0; r < visited.length; r++) {
 	        for (int i = 0; i < visited[r].length; i++) {
 	            for (int j = 0; j < visited[r][i].length; j++) {
@@ -282,61 +284,79 @@ public class MazeSolver {
 	            }
 	        }
 	    }
- 
+	    
 	    Queue<Tile> q = new LinkedList<>();
 	    q.add(startTile);
 	    visited[startTile.getRoom()][startTile.getRow()][startTile.getCol()] = true;
-
+	    
+	    // Define directions for N, S, E, W.
 	    int[] dRow = {-1, 1, 0, 0};
 	    int[] dCol = {0, 0, 1, -1};
-
+	    
 	    while (!q.isEmpty()) {
 	        Tile t = q.poll();
-
-	        // If BFS finds the coin, reconstruct final path
+	        // Debug: print the tile being processed.
+	        System.out.println("DEBUG: Processing tile (room=" + t.getRoom() 
+	            + ", row=" + t.getRow() + ", col=" + t.getCol() 
+	            + ") char=" + t.getChar());
+	        
+	        // If we find the coin, reconstruct and finish.
 	        if (t.getChar() == '$') {
 	            reconstructOptPath(t);
 	            System.out.println("Path found!");
-	            System.out.println();
 	            return true;
 	        }
-
-	        // NEW: If BFS finds a doorway, reconstruct partial path
+	        
+	        // If we encounter a door, try to chain into the next room.
 	        if (t.getChar() == '|') {
-	            // Reconstruct the path from this BFS's W(0) to the doorway
-	            reconstructOptPath(t);
-	            System.out.println("Reached doorway!");
-	            System.out.println();
-	            return false;  
-	            // Indicate "no coin found," but we did find the doorway
-	            // BFS ends here, letting the next BFS start from W(1).
+	            int nextRoom = t.getRoom() + 1;
+	            if (nextRoom < maze.getNumRooms()) {
+	                System.out.println("DEBUG: Door encountered at (room=" + t.getRoom() 
+	                    + ", row=" + t.getRow() + ", col=" + t.getCol() 
+	                    + "), chaining to room " + nextRoom);
+	                // Add all starting positions from the next room.
+	                for (Tile w : maze.getAllWolverines()) {
+	                    if (w.getRoom() == nextRoom && !visited[w.getRoom()][w.getRow()][w.getCol()]) {
+	                        visited[w.getRoom()][w.getRow()][w.getCol()] = true;
+	                        prev[w.getRoom()][w.getRow()][w.getCol()] = t;  // Link door to new start.
+	                        System.out.println("DEBUG: Adding starting tile from room " + nextRoom 
+	                            + " at (row=" + w.getRow() + ", col=" + w.getCol() + ")");
+	                        q.add(w);
+	                    }
+	                }
+	            } else {
+	                System.out.println("DEBUG: Door encountered, but no next room exists.");
+	            }
+	            // Continue with the search instead of returning false.
+	            continue;
 	        }
-
-	        // Explore neighbors
+	        
+	        // Explore neighbors in the same room.
 	        for (int i = 0; i < 4; i++) {
 	            int newRow = t.getRow() + dRow[i];
 	            int newCol = t.getCol() + dCol[i];
 	            int room = t.getRoom();
-
+	            
 	            if (newRow >= 0 && newRow < maze.getNumRows() &&
 	                newCol >= 0 && newCol < maze.getNumCols() &&
 	                !visited[room][newRow][newCol] &&
 	                maze.isWalkable(room, newRow, newCol)) {
-
+	                    
 	                visited[room][newRow][newCol] = true;
 	                prev[room][newRow][newCol] = t;
-	                q.add(new Tile(newRow, newCol, room, 
-	                               maze.getMap()[room][newRow][newCol]));
+	                Tile neighbor = new Tile(newRow, newCol, room, maze.getMap()[room][newRow][newCol]);
+	                q.add(neighbor);
+	                System.out.println("DEBUG: Enqueueing neighbor (room=" + room 
+	                    + ", row=" + newRow + ", col=" + newCol 
+	                    + ") char=" + neighbor.getChar());
 	            }
 	        }
 	    }
-
-	    // If BFS empties out without finding '$' or '|'
-	    System.out.println("No path found in this room (starting from " 
-	                       + startTile.getRow() + "," + startTile.getCol() + ").");
-	    System.out.println();
+	    
+	    System.out.println("No path found in this chain of mazes.");
 	    return false;
 	}
+
 
 	private void reconstructOptPath(Tile goal) {
 	    ArrayList<Tile> pathTiles = new ArrayList<>();

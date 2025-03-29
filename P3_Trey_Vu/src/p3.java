@@ -72,10 +72,16 @@ public class p3 {
 
         // 6) Build the Maze (auto-detect text or coordinate-based)
         // If you prefer to pass inCoordinate explicitly, create a second constructor: new Maze(filename, inCoordinate)
-        Maze maze = new Maze(filename);
+        Maze maze = new Maze(filename, inCoordinate);
 
         // 7) Create MazeSolver
         MazeSolver solver = new MazeSolver(maze);
+        System.out.println("DEBUG: Number of starting positions (W): " + maze.getAllWolverines().size());
+        for (Tile w : maze.getAllWolverines()) {
+            System.out.printf("DEBUG: W at (room=%d, row=%d, col=%d)%n", w.getRoom(), w.getRow(), w.getCol());
+        }
+
+
 
         // 8) Start timing if we want
         long startTime = System.nanoTime();
@@ -138,4 +144,6 @@ public class p3 {
         System.out.println();
         System.out.println("Example: java p3 --Queue --Time myMaze.txt");
     }
+    
+    // for mac: java -cp . p3 --Opt C2
 }

@@ -15,6 +15,8 @@ public class Maze {
             File file = new File(filename);
             Scanner scanner = new Scanner(file);
             System.out.println("Map Name: " + filename);
+            System.out.println("Using " + (isCoordinateBased ? "coordinate" : "text") + "-based input.");
+
             
          // read first line
             if (!scanner.hasNextLine()) {
@@ -49,7 +51,7 @@ public class Maze {
                 }
             }
             
-            scanner.nextLine(); // Move to the next line after dimensions
+//            scanner.nextLine(); // Move to the next line after dimensions
 
             // Detect format
             while (scanner.hasNextLine()) {
@@ -121,13 +123,15 @@ public class Maze {
             }
 
 
-            // Read coordinate-based format
+        // Read coordinate-based format
             if (isCoordinateBased) {
+                System.out.println("Processing coordinate-based input:");
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine().trim();
+                    System.out.println("DEBUG: Line read: \"" + line + "\"");
                     if (!line.isEmpty()) {
                         String[] tokens3 = line.split("\\s+");
-                        if (tokens3.length == 4) {
+                        if (tokens3.length >= 4) {  // Use >= 4 instead of == 4
                             char type = tokens3[0].charAt(0);
                             int row = Integer.parseInt(tokens3[1]);
                             int col = Integer.parseInt(tokens3[2]);
@@ -138,7 +142,8 @@ public class Maze {
                             // Track key positions
                             if (type == 'W') {
                                 start = new Tile(row, col, room, type);
-                                allWolverines.add(new Tile(row, col, room, type)); // Add this line
+                                allWolverines.add(new Tile(row, col, room, type));
+                                System.out.println("DEBUG: Added W at (room=" + room + ", row=" + row + ", col=" + col + ")");
                             }
                             if (type == '$') {
                                 goal = new Tile(row, col, room, type);
@@ -147,10 +152,12 @@ public class Maze {
                                 exit = new Tile(row, col, room, type);
                             }
                         }
-
                     }
                 }
             }
+
+
+
 
             scanner.close();
 
@@ -159,6 +166,128 @@ public class Maze {
             System.out.println("Error: File not found.");
         }
     }
+    
+    public Maze(String filename, boolean inCoordinate) throws IncorrectMapFormatException, FileNotFoundException {
+        try {
+            // Set format based on the provided flag
+            if (inCoordinate) {
+                System.out.println("Using coordinate-based input.");
+                isCoordinateBased = true;
+                isTextBased = false;
+            } else {
+                System.out.println("Using text-based input.");
+                isCoordinateBased = false;
+                isTextBased = true;
+            }
+
+            File file = new File(filename);
+            Scanner scanner = new Scanner(file);
+            System.out.println("Map Name: " + filename);
+            System.out.println("Using " + (isCoordinateBased ? "coordinate" : "text") + "-based input.");
+
+            // Read header (dimensions)
+            if (!scanner.hasNextLine()) {
+                throw new IncorrectMapFormatException("File is empty; expected M N R");
+            }
+            String firstLine = scanner.nextLine().trim();
+            String[] tokens = firstLine.split("\\s+");
+            if (tokens.length < 3) {
+                throw new IncorrectMapFormatException("Expected M N R in first line");
+            }
+            int M, N, R;
+            try {
+                M = Integer.parseInt(tokens[0]);
+                N = Integer.parseInt(tokens[1]);
+                R = Integer.parseInt(tokens[2]);
+            } catch (NumberFormatException e) {
+                throw new IncorrectMapFormatException("M, N, R not integers");
+            }
+            numRows = M;
+            numCols = N;
+            numRooms = R;
+            map = new char[numRooms][numRows][numCols];
+
+            // Initialize map with '.' before filling it
+            for (int room = 0; room < numRooms; room++) {
+                for (int row = 0; row < numRows; row++) {
+                    for (int col = 0; col < numCols; col++) {
+                        map[room][row][col] = '.';
+                    }
+                }
+            }
+
+            // Skip the rest of the header line (if any)
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+
+            // Now choose only one branch based on the flag:
+            if (isCoordinateBased) {
+                System.out.println("Processing coordinate-based input:");
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine().trim();
+                    System.out.println("DEBUG: Line read: \"" + line + "\"");
+                    if (!line.isEmpty()) {
+                        String[] tokens3 = line.split("\\s+");
+                        if (tokens3.length >= 4) {
+                            char type = tokens3[0].charAt(0);
+                            int row = Integer.parseInt(tokens3[1]);
+                            int col = Integer.parseInt(tokens3[2]);
+                            int room = Integer.parseInt(tokens3[3]);
+
+                            map[room][row][col] = type;
+
+                            if (type == 'W') {
+                                allWolverines.add(new Tile(row, col, room, type));
+                                if (start == null) {
+                                    start = new Tile(row, col, room, type);
+                                }
+                                System.out.println("DEBUG: Added W at (room=" + room + ", row=" + row + ", col=" + col + ")");
+                            }
+                            if (type == '$') {
+                                goal = new Tile(row, col, room, type);
+                            }
+                            if (type == '|') {
+                                exit = new Tile(row, col, room, type);
+                            }
+                        }
+                    }
+                }
+            } else { // text-based
+                for (int room = 0; room < numRooms; room++) {
+                    for (int row = 0; row < numRows; row++) {
+                        if (!scanner.hasNextLine()) break;
+                        String line = scanner.nextLine().trim();
+                        for (int col = 0; col < numCols && col < line.length(); col++) {
+                            char c = line.charAt(col);
+                            if (isGameChar(c)) {
+                                map[room][row][col] = c;
+                            } else {
+                                map[room][row][col] = '.';
+                            }
+                            if (c == 'W') {
+                                allWolverines.add(new Tile(row, col, room, c));
+                                if (start == null) {
+                                    start = new Tile(row, col, room, c);
+                                }
+                            } else if (c == '$') {
+                                goal = new Tile(row, col, room, c);
+                            } else if (c == '|') {
+                                exit = new Tile(row, col, room, c);
+                            }
+                        }
+                    }
+                }
+            }
+
+            scanner.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+            System.out.println("Error: File not found.");
+        }
+    }
+
     
     private boolean isGameChar(char c) {
         // Only accept these characters as valid
