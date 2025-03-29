@@ -145,5 +145,6 @@ public class p3 {
         System.out.println("Example: java p3 --Queue --Time myMaze.txt");
     }
     
-    // for mac: java -cp . p3 --Opt C2
+    // for mac: java -cp . p3 --Opt T5
+    // java -cp . p3 --Opt --Incoordinate C2
 }
