@@ -11,7 +11,8 @@ public class Maze {
     private ArrayList<Tile> allWolverines = new ArrayList<>();
 
     // Single constructor using the provided flag.
-    public Maze(String filename, boolean inCoordinate) throws IncorrectMapFormatException, FileNotFoundException {
+    public Maze(String filename, boolean inCoordinate) throws IncorrectMapFormatException, FileNotFoundException, IllegalMapCharacterException, IncompleteMapException {
+
         // Set format explicitly based on the flag.
         if (inCoordinate) {
             System.out.println("Using coordinate-based input.");
@@ -52,13 +53,13 @@ public class Maze {
         map = new char[numRooms][numRows][numCols];
 
         // Initialize the map with '.' as default.
-        for (int room = 0; room < numRooms; room++) {
-            for (int row = 0; row < numRows; row++) {
-                for (int col = 0; col < numCols; col++) {
-                    map[room][row][col] = '.';
-                }
-            }
-        }
+//        for (int room = 0; room < numRooms; room++) {
+//            for (int row = 0; row < numRows; row++) {
+//                for (int col = 0; col < numCols; col++) {
+//                    map[room][row][col] = '.';
+//                }
+//            }
+//        }
         
         // Process the remainder of the file exclusively based on the flag.
         if (isCoordinateBased) {
@@ -92,32 +93,52 @@ public class Maze {
                     }
                 }
             }
-        } else { // Process text-based input.
-            System.out.println("Processing text-based input:");
-            for (int room = 0; room < numRooms; room++) {
-                for (int row = 0; row < numRows; row++) {
-                    if (!scanner.hasNextLine()) break;
-                    String line = scanner.nextLine().trim();
-                    for (int col = 0; col < numCols && col < line.length(); col++) {
-                        char c = line.charAt(col);
-                        if (isGameChar(c)) {
-                            map[room][row][col] = c;
-                        } else {
-                            map[room][row][col] = '.';
-                        }
-                        if (c == 'W') {
-                            allWolverines.add(new Tile(row, col, room, c));
-                            if (start == null) {
-                                start = new Tile(row, col, room, c);
-                            }
-                        } else if (c == '$') {
-                            goal = new Tile(row, col, room, c);
-                        } else if (c == '|') {
-                            exit = new Tile(row, col, room, c);
-                        }
-                    }
-                }
-            }
+        } else { 
+        	// Process text-based input.
+        	System.out.println("Processing text-based input:");
+        	for (int room = 0; room < numRooms; room++) {
+        	    for (int row = 0; row < numRows; row++) {
+        	        // Check that there is a next line; if not, the map is incomplete.
+        	        if (!scanner.hasNextLine()) {
+        	            throw new IncompleteMapException("Incomplete map: expected " + numRows +
+        	                                             " rows in room " + room + " but reached end-of-file at row " + row);
+        	        }
+        	        String line = scanner.nextLine().trim();
+        	        // If the line is shorter than expected, throw an exception.
+        	        if (line.length() < numCols) {
+        	            throw new IncompleteMapException("Incomplete map: expected " + numCols +
+        	                                             " columns in row " + row + " of room " + room +
+        	                                             " but got " + line.length());
+        	        }
+        	        for (int col = 0; col < numCols; col++) {
+        	            char c = line.charAt(col);
+        	            if (!isGameChar(c)) {
+        	                System.out.println("DEBUG: Illegal character '" + c + "' encountered at room " + room +
+        	                                   ", row " + row + ", col " + col);
+        	                throw new IllegalMapCharacterException("Illegal character '" + c +
+        	                                                       "' encountered at room " + room +
+        	                                                       ", row " + row + ", col " + col);
+        	            }
+        	            // Directly assign the character from the file.
+        	            map[room][row][col] = c;
+        	            
+        	            // Track special positions.
+        	            if (c == 'W') {
+        	                allWolverines.add(new Tile(row, col, room, c));
+        	                if (start == null) {
+        	                    start = new Tile(row, col, room, c);
+        	                }
+        	            } else if (c == '$') {
+        	                goal = new Tile(row, col, room, c);
+        	            } else if (c == '|') {
+        	                exit = new Tile(row, col, room, c);
+        	            } 
+        	        }
+        	    }
+        	}
+
+
+
         }
         scanner.close();
     }

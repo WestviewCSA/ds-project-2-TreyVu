@@ -71,7 +71,6 @@ public class p3 {
         }
 
         // 6) Build the Maze (auto-detect text or coordinate-based)
-        // If you prefer to pass inCoordinate explicitly, create a second constructor: new Maze(filename, inCoordinate)
         Maze maze = new Maze(filename, inCoordinate);
 
         // 7) Create MazeSolver
@@ -117,8 +116,6 @@ public class p3 {
 
         // 12) If outCoordinate is set, print route in coordinate-based form
         if (outCoordinate) {
-            // You need to adapt BFS/DFS to store the actual path if you want
-            // a correct route in coordinate form. Here is just a placeholder:
             System.out.println("Coordinate-based route output (stub) not yet implemented!");
         } else {
             // Print the final Maze with '+' for the path
